@@ -125,7 +125,10 @@ class WeatherService:
             })
 
         district_temps.sort(key=lambda x: (x["avg_temp"], x["avg_pm25"]))
-        return district_temps[:10]
+        return [
+        {"district": d["district"], "avg_temp": d["avg_temp"]}
+        for d in district_temps[:10]
+    ]
     
 
     def temp_difference(self, location, destination, date):
@@ -133,6 +136,6 @@ class WeatherService:
         dest_lat, dest_long = self.district_service.location_info(destination)
         start = self.fetch_weather(start_lat, start_long, date)
         dest = self.fetch_weather(dest_lat, dest_long, date)
-        start_res = self.calculate_average(start, one_day=True)
-        dest_res = self.calculate_average(dest, one_day=True)
+        start_res = self.calculate_average_temperature(start, one_day=True)
+        dest_res = self.calculate_average_temperature(dest, one_day=True)
         return {f"{location}'s temperature": start_res, f"{destination} temperature": dest_res}

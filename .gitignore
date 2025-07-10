@@ -10,3 +10,4 @@ env/
 .venv/
 
 __pycache__/
+weather_project/cache/
