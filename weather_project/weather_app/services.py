@@ -103,10 +103,9 @@ class WeatherService:
     def calculate_average_pm25(self, air_data):
         times = air_data["hourly"]["time"]
         pm_values = air_data["hourly"]["pm2_5"]
-        two_pm_pm25 = [
-        pm for time, pm in zip(times, pm_values) if "T14:00" in time
-    ]
-        return sum(pm_values) / len(pm_values)
+        two_pm_air = pm_values[14::24]
+       
+        return sum(two_pm_air) / len(two_pm_air)
     
     def get_coolest_districts(self):
         district_temps = []
