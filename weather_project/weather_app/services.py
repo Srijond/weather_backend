@@ -1,6 +1,8 @@
 import json
+from django.core.cache import cache
 import requests
 from pathlib import Path
+
 
 
 class BdDistrictService:
@@ -34,6 +36,11 @@ class WeatherService:
 
     
     def fetch_weather(self,lat,long,date=None):
+        cache_key = f"weather_{lat}_{long}_{date or '7_days'}"
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return cached_data
         API_URL = self.district_service.get_temp_url(lat,long)
 
         params = {
@@ -49,17 +56,24 @@ class WeatherService:
             params["forecast_days"] = 7
 
 
-        response = requests.get(API_URL,params=params,timeout=5)
+        response = requests.get(API_URL,params=params,timeout=15)
 
 
         print(response)
 
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            cache.set(cache_key, data, timeout=60 * 60)
+            return data
         
         return None
     
     def fetch_air(self,lat,long):
+        cache_key = f"air_{lat}_{long}"
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return cached_data
         API_URL = self.district_service.get_air_url(lat,long)
         params = {
             "latitude": lat,
@@ -68,11 +82,13 @@ class WeatherService:
             "timezone": "auto"
         }
 
-        response = requests.get(API_URL,params=params,timeout=10)
+        response = requests.get(API_URL,params=params,timeout=15)
 
 
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            cache.set(cache_key, data, timeout=60 * 60)
+            return data
         
         return None
         
