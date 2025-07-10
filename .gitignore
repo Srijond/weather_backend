@@ -1,0 +1,10 @@
+# VSCode or other IDE/editor config
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Virtual environments
+venv/
+env/
+.venv/
