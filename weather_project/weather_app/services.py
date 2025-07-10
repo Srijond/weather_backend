@@ -68,7 +68,7 @@ class WeatherService:
             "timezone": "auto"
         }
 
-        response = requests.get(API_URL,params=params,timeout=5)
+        response = requests.get(API_URL,params=params,timeout=10)
 
 
         if response.status_code == 200:
@@ -77,7 +77,7 @@ class WeatherService:
         return None
         
 
-    def calculate_average(self, weather_data, one_day=False):
+    def calculate_average_temperature(self, weather_data, one_day=False):
         hourly_temps = weather_data["hourly"]["temperature_2m"]
         two_pm_temps = hourly_temps[14::24]
         if one_day:
